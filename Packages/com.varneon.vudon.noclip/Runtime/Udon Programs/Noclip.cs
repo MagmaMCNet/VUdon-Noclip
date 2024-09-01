@@ -157,6 +157,12 @@ namespace Varneon.VUdon.Noclip
         /// Current vertical look input
         /// </summary>
         private float inputLookVertical;
+
+        /// <summary>
+        /// Gravity Before Enabling Noclip
+        /// </summary>
+        private float orignalGravity = 0;
+
         #endregion // Private Variables
 
         #region Unity Methods
@@ -173,6 +179,9 @@ namespace Varneon.VUdon.Noclip
         {
             if (noclipEnabled)
             {
+                // Fixes issues with UI's when in Noclip
+                localPlayer.SetGravityStrength(0);
+
                 Vector3 localPlayerPos = localPlayer.GetPosition();
 
                 // Cache the last position
@@ -273,11 +282,13 @@ namespace Varneon.VUdon.Noclip
 
             if (enabled)
             {
+                orignalGravity = localPlayer.GetGravityStrength();
                 // Get the initial position of the player
                 position = localPlayer.GetPosition();
             }
             else
             {
+                localPlayer.SetGravityStrength(orignalGravity);
                 // Apply the remainder velocity from last lerp to the player's velocity to allow them to fly after turning off noclip
                 localPlayer.SetVelocity((position - lastPosition) / Time.deltaTime);
             }
@@ -398,6 +409,24 @@ namespace Varneon.VUdon.Noclip
         }
 
         /// <summary>
+        /// Sets DoubleJump enabled
+        /// </summary>
+        [PublicAPI("Sets DoubleJump enabled")]
+        public void _SetDoubleJump(bool enabled)
+        {
+            toggleByDoubleJump = enabled;
+        }
+
+        /// <summary>
+        /// Gets DoubleJump enabled
+        /// </summary>
+        [PublicAPI("Gets DoubleJump enabled")]
+        public bool _GetDoubleJump()
+        {
+            return toggleByDoubleJump;
+        }
+
+        /// <summary>
         /// Sets the noclip max speed
         /// </summary>
         /// <param name="maxSpeed"></param>
@@ -405,6 +434,16 @@ namespace Varneon.VUdon.Noclip
         public void _SetMaxSpeed(float maxSpeed)
         {
             speed = maxSpeed;
+        }
+
+        /// <summary>
+        /// Gets the noclip max speed
+        /// </summary>
+        /// <param name="maxSpeed"></param>
+        [PublicAPI("Gets the noclip max speed")]
+        public float _GetMaxSpeed()
+        {
+            return speed;
         }
         #endregion
     }
