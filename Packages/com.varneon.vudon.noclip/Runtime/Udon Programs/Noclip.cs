@@ -305,6 +305,8 @@ namespace Varneon.VUdon.Noclip
         #region VRChat Override Methods
         public override void InputJump(bool value, UdonInputEventArgs args)
         {
+            if (!enabled || !gameObject.activeInHierarchy)
+                return;
             // Only register inputs when noclip can be toggled with double jump and jump was just pressed
             if (toggleByDoubleJump && value)
             {
